@@ -110,18 +110,24 @@ const Quiz = () => {
   };
 
   const onSubmitParticipant = async (data: ParticipantForm) => {
+    console.log("Starting participant submission with data:", data);
     setLoading(true);
     try {
       // Check for duplicate mobile number
+      console.log("Checking for duplicate mobile number...");
       const { data: existing, error: checkError } = await supabase
         .from("submissions")
         .select("id")
         .eq("mobile_number", data.mobile_number)
         .eq("quiz_id", quiz?.id);
 
-      if (checkError) throw checkError;
+      if (checkError) {
+        console.error("Error checking duplicate:", checkError);
+        throw checkError;
+      }
 
       if (existing && existing.length > 0) {
+        console.log("Duplicate mobile number found");
         toast({
           title: "Already Submitted",
           description: "You have already submitted this quiz with this mobile number.",
@@ -131,9 +137,11 @@ const Quiz = () => {
         return;
       }
 
+      console.log("No duplicate found, proceeding to quiz...");
       setParticipantData(data);
       setCurrentStep(2);
     } catch (error) {
+      console.error("Error in participant submission:", error);
       toast({
         title: "Error",
         description: "Failed to validate participant data. Please try again.",
@@ -164,33 +172,48 @@ const Quiz = () => {
   const handleSubmitQuiz = async () => {
     if (!participantData || !quiz) return;
 
+    console.log("Starting quiz submission...", { participantData, quiz, answers });
     setLoading(true);
     try {
+      console.log("Calculating score...");
       const { data, error } = await supabase.rpc("calculate_quiz_score", {
         quiz_id_param: quiz.id,
         answers_param: answers,
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error("Error calculating score:", error);
+        throw error;
+      }
 
       const score = data || 0;
       const referenceId = `QZ${Date.now()}${Math.random().toString(36).substr(2, 4).toUpperCase()}`;
 
+      console.log("Score calculated:", score, "Reference ID:", referenceId);
+
+      const submissionData = {
+        quiz_id: quiz.id,
+        participant_name: participantData.participant_name,
+        mobile_number: participantData.mobile_number,
+        panchayath: participantData.panchayath,
+        answers: answers,
+        score: score,
+        reference_id: referenceId,
+        reference_mobile: participantData.reference_mobile || null,
+      };
+
+      console.log("Submitting to database:", submissionData);
+
       const { error: submitError } = await supabase
         .from("submissions")
-        .insert({
-          quiz_id: quiz.id,
-          participant_name: participantData.participant_name,
-          mobile_number: participantData.mobile_number,
-          panchayath: participantData.panchayath,
-          answers: answers,
-          score: score,
-          reference_id: referenceId,
-          reference_mobile: participantData.reference_mobile || null,
-        });
+        .insert(submissionData);
 
-      if (submitError) throw submitError;
+      if (submitError) {
+        console.error("Error submitting to database:", submitError);
+        throw submitError;
+      }
 
+      console.log("Quiz submitted successfully!");
       toast({
         title: "Quiz Submitted Successfully!",
         description: `Your score: ${score}/${questions.length}. Reference ID: ${referenceId}`,
@@ -198,6 +221,7 @@ const Quiz = () => {
 
       setCurrentStep(3);
     } catch (error) {
+      console.error("Error in quiz submission:", error);
       toast({
         title: "Error",
         description: "Failed to submit quiz. Please try again.",
