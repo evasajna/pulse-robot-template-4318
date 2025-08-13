@@ -17,7 +17,10 @@ const participantSchema = z.object({
   participant_name: z.string().min(2, "Name must be at least 2 characters"),
   mobile_number: z.string().min(10, "Mobile number must be at least 10 digits").max(15, "Mobile number must be at most 15 digits"),
   panchayath: z.string().min(2, "Panchayath name is required"),
-  reference_mobile: z.string().min(10, "Reference mobile number must be at least 10 digits").max(15, "Reference mobile number must be at most 15 digits").optional().or(z.literal("")),
+  reference_mobile: z.string().optional().refine((val) => {
+    if (!val || val === "") return true;
+    return val.length >= 10 && val.length <= 15;
+  }, "Reference mobile number must be between 10-15 digits"),
 });
 
 type ParticipantForm = z.infer<typeof participantSchema>;
