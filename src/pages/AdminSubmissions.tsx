@@ -18,6 +18,7 @@ interface Submission {
   reference_id: string;
   submitted_at: string;
   quiz_id: string;
+  reference_mobile: string | null;
 }
 
 interface Quiz {
@@ -32,11 +33,18 @@ interface LeaderboardEntry {
   top_score: number;
 }
 
+interface ReferralEntry {
+  mobile_number: string;
+  total_referrals: number;
+  average_score_of_referrals: number;
+}
+
 const AdminSubmissions = () => {
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [filteredSubmissions, setFilteredSubmissions] = useState<Submission[]>([]);
   const [quizzes, setQuizzes] = useState<Quiz[]>([]);
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
+  const [referralLeaderboard, setReferralLeaderboard] = useState<ReferralEntry[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
   const [totalQuestions, setTotalQuestions] = useState(0);
@@ -74,12 +82,19 @@ const AdminSubmissions = () => {
 
       if (questionsError) throw questionsError;
 
-      setSubmissions(submissionsData || []);
+      // Transform submissions data to ensure reference_mobile exists
+      const transformedSubmissions = (submissionsData || []).map(submission => ({
+        ...submission,
+        reference_mobile: (submission as any).reference_mobile || null
+      }));
+
+      setSubmissions(transformedSubmissions);
       setQuizzes(quizzesData || []);
       setTotalQuestions(questionsData?.length || 0);
 
-      // Calculate leaderboard
-      calculateLeaderboard(submissionsData || []);
+      // Calculate leaderboards
+      calculateLeaderboard(transformedSubmissions);
+      calculateReferralLeaderboard(transformedSubmissions);
     } catch (error) {
       toast({
         title: "Error",
@@ -125,6 +140,43 @@ const AdminSubmissions = () => {
     });
 
     setLeaderboard(leaderboardData);
+  };
+
+  const calculateReferralLeaderboard = (submissionsData: Submission[]) => {
+    // Filter submissions that have reference_mobile
+    const referredSubmissions = submissionsData.filter(s => s.reference_mobile);
+    
+    const referralStats = referredSubmissions.reduce((acc, submission) => {
+      const refMobile = submission.reference_mobile!;
+      if (!acc[refMobile]) {
+        acc[refMobile] = {
+          mobile_number: refMobile,
+          total_referrals: 0,
+          total_score: 0,
+        };
+      }
+      
+      acc[refMobile].total_referrals += 1;
+      acc[refMobile].total_score += submission.score || 0;
+      
+      return acc;
+    }, {} as Record<string, any>);
+
+    const referralLeaderboardData = Object.values(referralStats).map((stats: any) => ({
+      mobile_number: stats.mobile_number,
+      total_referrals: stats.total_referrals,
+      average_score_of_referrals: Math.round((stats.total_score / stats.total_referrals) * 100) / 100,
+    }));
+
+    // Sort by total referrals, then by average score
+    referralLeaderboardData.sort((a, b) => {
+      if (b.total_referrals !== a.total_referrals) {
+        return b.total_referrals - a.total_referrals;
+      }
+      return b.average_score_of_referrals - a.average_score_of_referrals;
+    });
+
+    setReferralLeaderboard(referralLeaderboardData);
   };
 
   const filterSubmissions = () => {
@@ -207,7 +259,73 @@ const AdminSubmissions = () => {
           </Button>
         </div>
 
-        {/* Leaderboard */}
+        {/* Referral Leaderboard */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center">
+              <Trophy className="h-5 w-5 mr-2" />
+              Top Referrers - Prize Winners
+            </CardTitle>
+            <CardDescription>Most referred mobile numbers eligible for 1st, 2nd, and 3rd prizes</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {referralLeaderboard.length === 0 ? (
+              <div className="text-center py-8 text-muted-foreground">
+                No referral data available yet.
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {referralLeaderboard.slice(0, 3).map((entry, index) => (
+                  <div
+                    key={entry.mobile_number}
+                    className={`flex items-center justify-between p-6 rounded-lg border-2 ${
+                      index === 0 ? "bg-gradient-to-r from-yellow-50 to-yellow-100 border-yellow-300" :
+                      index === 1 ? "bg-gradient-to-r from-gray-50 to-gray-100 border-gray-300" :
+                      "bg-gradient-to-r from-amber-50 to-orange-100 border-amber-300"
+                    }`}
+                  >
+                    <div className="flex items-center space-x-4">
+                      <div className={`w-12 h-12 rounded-full flex items-center justify-center text-lg font-bold ${
+                        index === 0 ? "bg-yellow-500 text-white shadow-lg" :
+                        index === 1 ? "bg-gray-400 text-white shadow-lg" :
+                        "bg-amber-600 text-white shadow-lg"
+                      }`}>
+                        {index + 1}
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-bold text-foreground">{entry.mobile_number}</h3>
+                        <div className="flex items-center space-x-4 text-sm text-muted-foreground">
+                          <span className="flex items-center font-medium">
+                            <Users className="h-4 w-4 mr-1" />
+                            {entry.total_referrals} referrals
+                          </span>
+                          <span className="flex items-center">
+                            <BarChart3 className="h-4 w-4 mr-1" />
+                            Avg: {entry.average_score_of_referrals}/{totalQuestions}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className={`text-sm font-bold px-3 py-1 rounded-full ${
+                        index === 0 ? "bg-yellow-500 text-white" :
+                        index === 1 ? "bg-gray-400 text-white" :
+                        "bg-amber-600 text-white"
+                      }`}>
+                        {index === 0 ? "1st Prize" : index === 1 ? "2nd Prize" : "3rd Prize"}
+                      </div>
+                      <div className="text-xs text-muted-foreground mt-1">
+                        {Math.round((entry.average_score_of_referrals / totalQuestions) * 100)}% success rate
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Panchayath Leaderboard */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center">

@@ -17,6 +17,7 @@ const participantSchema = z.object({
   participant_name: z.string().min(2, "Name must be at least 2 characters"),
   mobile_number: z.string().min(10, "Mobile number must be at least 10 digits").max(15, "Mobile number must be at most 15 digits"),
   panchayath: z.string().min(2, "Panchayath name is required"),
+  reference_mobile: z.string().min(10, "Reference mobile number must be at least 10 digits").max(15, "Reference mobile number must be at most 15 digits").optional().or(z.literal("")),
 });
 
 type ParticipantForm = z.infer<typeof participantSchema>;
@@ -182,6 +183,7 @@ const Quiz = () => {
           answers: answers,
           score: score,
           reference_id: referenceId,
+          reference_mobile: participantData.reference_mobile || null,
         });
 
       if (submitError) throw submitError;
@@ -297,6 +299,26 @@ const Quiz = () => {
                             <Input placeholder="Enter your panchayath name" {...field} />
                           </FormControl>
                           <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="reference_mobile"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="flex items-center">
+                            <Phone className="h-4 w-4 mr-2" />
+                            Reference Mobile Number (Optional)
+                          </FormLabel>
+                          <FormControl>
+                            <Input placeholder="Enter referrer's mobile number" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                          <p className="text-xs text-muted-foreground">
+                            Enter the mobile number of the person who referred you to participate in this quiz
+                          </p>
                         </FormItem>
                       )}
                     />
