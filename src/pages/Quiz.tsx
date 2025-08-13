@@ -199,7 +199,6 @@ const Quiz = () => {
         answers: answers,
         score: score,
         reference_id: referenceId,
-        reference_mobile: participantData.reference_mobile || null,
       };
 
       console.log("Submitting to database:", submissionData);
