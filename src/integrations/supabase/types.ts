@@ -14,16 +14,156 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      admin_users: {
+        Row: {
+          created_at: string | null
+          id: string
+          password_hash: string
+          username: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          password_hash: string
+          username: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          password_hash?: string
+          username?: string
+        }
+        Relationships: []
+      }
+      questions: {
+        Row: {
+          correct_answer: string
+          created_at: string | null
+          id: string
+          options: Json
+          question_text: string
+          question_type: Database["public"]["Enums"]["question_type"] | null
+          quiz_id: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          correct_answer: string
+          created_at?: string | null
+          id?: string
+          options: Json
+          question_text: string
+          question_type?: Database["public"]["Enums"]["question_type"] | null
+          quiz_id?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          correct_answer?: string
+          created_at?: string | null
+          id?: string
+          options?: Json
+          question_text?: string
+          question_type?: Database["public"]["Enums"]["question_type"] | null
+          quiz_id?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "questions_quiz_id_fkey"
+            columns: ["quiz_id"]
+            isOneToOne: false
+            referencedRelation: "quizzes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      quizzes: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          status: Database["public"]["Enums"]["quiz_status"] | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          status?: Database["public"]["Enums"]["quiz_status"] | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          status?: Database["public"]["Enums"]["quiz_status"] | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      submissions: {
+        Row: {
+          answers: Json
+          id: string
+          mobile_number: string
+          panchayath: string
+          participant_name: string
+          quiz_id: string | null
+          reference_id: string | null
+          score: number | null
+          submitted_at: string | null
+        }
+        Insert: {
+          answers: Json
+          id?: string
+          mobile_number: string
+          panchayath: string
+          participant_name: string
+          quiz_id?: string | null
+          reference_id?: string | null
+          score?: number | null
+          submitted_at?: string | null
+        }
+        Update: {
+          answers?: Json
+          id?: string
+          mobile_number?: string
+          panchayath?: string
+          participant_name?: string
+          quiz_id?: string | null
+          reference_id?: string | null
+          score?: number | null
+          submitted_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "submissions_quiz_id_fkey"
+            columns: ["quiz_id"]
+            isOneToOne: false
+            referencedRelation: "quizzes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      calculate_quiz_score: {
+        Args: { quiz_id_param: string; answers_param: Json }
+        Returns: number
+      }
+      verify_admin_login: {
+        Args: { input_username: string; input_password: string }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      question_type: "multiple_choice"
+      quiz_status: "active" | "inactive"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +290,9 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      question_type: ["multiple_choice"],
+      quiz_status: ["active", "inactive"],
+    },
   },
 } as const
