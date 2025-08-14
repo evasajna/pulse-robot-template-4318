@@ -7,8 +7,6 @@ import { Trophy, Medal, Award } from "lucide-react";
 interface ReferralWinner {
   mobile_number: string;
   referral_count: number;
-  prize: string;
-  amount: string;
 }
 
 const ReferralWinners = () => {
@@ -40,19 +38,10 @@ const ReferralWinners = () => {
       const sortedWinners = Object.entries(referralCounts)
         .sort(([, a], [, b]) => b - a)
         .slice(0, 3)
-        .map(([mobile_number, referral_count], index) => {
-          const prizes = [
-            { prize: "1st Prize", amount: "₹10,000 + Certificate" },
-            { prize: "2nd Prize", amount: "₹5,000 + Certificate" },
-            { prize: "3rd Prize", amount: "₹3,000 + Certificate" }
-          ];
-          
-          return {
-            mobile_number,
-            referral_count,
-            ...prizes[index]
-          };
-        });
+        .map(([mobile_number, referral_count]) => ({
+          mobile_number,
+          referral_count
+        }));
 
       setWinners(sortedWinners);
     } catch (error) {
@@ -70,13 +59,9 @@ const ReferralWinners = () => {
     }
   };
 
-  const getBadgeVariant = (index: number) => {
-    switch (index) {
-      case 0: return "default" as const;
-      case 1: return "secondary" as const;
-      case 2: return "outline" as const;
-      default: return "default" as const;
-    }
+  const getRankDisplay = (index: number) => {
+    const ranks = ["1st", "2nd", "3rd"];
+    return ranks[index] || `${index + 1}th`;
   };
 
   if (loading) {
@@ -122,10 +107,9 @@ const ReferralWinners = () => {
                   </div>
                 </div>
                 <div className="text-right">
-                  <Badge variant={getBadgeVariant(index)} className="mb-1">
-                    {winner.prize}
+                  <Badge variant="default">
+                    {getRankDisplay(index)} Place
                   </Badge>
-                  <div className="text-sm font-medium">{winner.amount}</div>
                 </div>
               </div>
             ))}

@@ -5,6 +5,7 @@ import { useToast } from "@/hooks/use-toast";
 import AdminLayout from "@/components/AdminLayout";
 import { Users, FileQuestion, Trophy, BarChart3 } from "lucide-react";
 import ReferralWinners from "@/components/ReferralWinners";
+import QuizWinners from "@/components/QuizWinners";
 
 interface DashboardStats {
   totalSubmissions: number;
@@ -157,8 +158,11 @@ const AdminDashboard = () => {
           </Card>
         </div>
 
-        {/* Referral Winners */}
-        <ReferralWinners />
+        {/* Winners Grid */}
+        <div className="grid lg:grid-cols-2 gap-6">
+          <QuizWinners />
+          <ReferralWinners />
+        </div>
 
         {/* System Overview */}
         <Card>
