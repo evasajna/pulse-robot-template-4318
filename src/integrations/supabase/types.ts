@@ -378,6 +378,45 @@ export type Database = {
         }
         Relationships: []
       }
+      questions: {
+        Row: {
+          correct_answer: string
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          option_a: string
+          option_b: string
+          option_c: string
+          option_d: string
+          question_text: string
+          updated_at: string | null
+        }
+        Insert: {
+          correct_answer: string
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          option_a: string
+          option_b: string
+          option_c: string
+          option_d: string
+          question_text: string
+          updated_at?: string | null
+        }
+        Update: {
+          correct_answer?: string
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          option_a?: string
+          option_b?: string
+          option_c?: string
+          option_d?: string
+          question_text?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       registration_verifications: {
         Row: {
           created_at: string | null
@@ -566,6 +605,50 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: []
+      }
+      submissions: {
+        Row: {
+          answers: Json | null
+          id: string
+          mobile_number: string
+          participant_name: string
+          reference_mobile_number: string | null
+          score: number
+          shared_link_id: string | null
+          submitted_at: string | null
+          total_questions: number
+        }
+        Insert: {
+          answers?: Json | null
+          id?: string
+          mobile_number: string
+          participant_name: string
+          reference_mobile_number?: string | null
+          score?: number
+          shared_link_id?: string | null
+          submitted_at?: string | null
+          total_questions: number
+        }
+        Update: {
+          answers?: Json | null
+          id?: string
+          mobile_number?: string
+          participant_name?: string
+          reference_mobile_number?: string | null
+          score?: number
+          shared_link_id?: string | null
+          submitted_at?: string | null
+          total_questions?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "submissions_shared_link_id_fkey"
+            columns: ["shared_link_id"]
+            isOneToOne: false
+            referencedRelation: "shared_links"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       utilities: {
         Row: {

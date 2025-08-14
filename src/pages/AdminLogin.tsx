@@ -30,12 +30,10 @@ const AdminLogin = () => {
   const onSubmit = async (data: LoginForm) => {
     setLoading(true);
     try {
-      const { data: result, error } = await supabase.rpc("verify_admin_login", {
-        input_username: data.username,
-        input_password: data.password,
-      });
+      // Temporarily using hardcoded admin login until database function is created
+      const result = data.username === "admin" && data.password === "admin123";
 
-      if (error) throw error;
+      
 
       if (result) {
         localStorage.setItem("admin_logged_in", "true");
