@@ -19,18 +19,19 @@ const ReferralWinners = () => {
 
   const fetchReferralWinners = async () => {
     try {
-      // Get all submissions with reference_id (referrals)
+      // Get all submissions with reference_id (reference mobile number provided by contestants)
       const { data: submissions, error } = await supabase
         .from("submissions")
         .select("reference_id")
-        .not("reference_id", "is", null);
+        .not("reference_id", "is", null)
+        .neq("reference_id", "");
 
       if (error) throw error;
 
-      // Count referrals for each mobile number
+      // Count how many times each reference mobile number was provided by contestants
       const referralCounts = submissions.reduce((acc, submission) => {
-        const mobileNumber = submission.reference_id;
-        acc[mobileNumber] = (acc[mobileNumber] || 0) + 1;
+        const referenceMobileNumber = submission.reference_id;
+        acc[referenceMobileNumber] = (acc[referenceMobileNumber] || 0) + 1;
         return acc;
       }, {} as Record<string, number>);
 
