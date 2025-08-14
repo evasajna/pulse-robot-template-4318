@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
+import ShareLinkGenerator from "@/components/ShareLinkGenerator";
 import indianFlag from "@/assets/indian-flag.jpg";
 
 const Index = () => {
@@ -36,6 +37,9 @@ const Index = () => {
               </Button>
             </Link>
           </div>
+          
+          {/* Share Link Generator Section */}
+          <ShareLinkGenerator />
         </div>
       </div>
     </div>

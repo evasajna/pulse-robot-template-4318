@@ -7,166 +7,608 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instanciate createClient with right options
+  // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "13.0.4"
   }
   public: {
     Tables: {
+      admin_permissions: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          is_active: boolean
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+        }
+        Relationships: []
+      }
+      admin_user_permissions: {
+        Row: {
+          admin_user_id: string
+          granted_at: string
+          granted_by: string | null
+          id: string
+          permission_id: string
+        }
+        Insert: {
+          admin_user_id: string
+          granted_at?: string
+          granted_by?: string | null
+          id?: string
+          permission_id: string
+        }
+        Update: {
+          admin_user_id?: string
+          granted_at?: string
+          granted_by?: string | null
+          id?: string
+          permission_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "admin_user_permissions_admin_user_id_fkey"
+            columns: ["admin_user_id"]
+            isOneToOne: false
+            referencedRelation: "admin_users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "admin_user_permissions_permission_id_fkey"
+            columns: ["permission_id"]
+            isOneToOne: false
+            referencedRelation: "admin_permissions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       admin_users: {
         Row: {
-          created_at: string | null
+          created_at: string
+          created_by: string | null
+          email: string | null
+          full_name: string
           id: string
+          is_active: boolean
+          last_login: string | null
           password_hash: string
+          updated_at: string
           username: string
         }
         Insert: {
-          created_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          email?: string | null
+          full_name: string
           id?: string
+          is_active?: boolean
+          last_login?: string | null
           password_hash: string
+          updated_at?: string
           username: string
         }
         Update: {
-          created_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          email?: string | null
+          full_name?: string
           id?: string
+          is_active?: boolean
+          last_login?: string | null
           password_hash?: string
+          updated_at?: string
           username?: string
         }
         Relationships: []
       }
-      questions: {
+      announcements: {
         Row: {
-          correct_answer: string
-          created_at: string | null
+          content: string
+          created_at: string
           id: string
-          options: Json
-          question_text: string
-          question_type: Database["public"]["Enums"]["question_type"] | null
-          quiz_id: string | null
-          updated_at: string | null
+          is_active: boolean | null
+          title: string
+          updated_at: string
         }
         Insert: {
-          correct_answer: string
-          created_at?: string | null
+          content: string
+          created_at?: string
           id?: string
-          options: Json
-          question_text: string
-          question_type?: Database["public"]["Enums"]["question_type"] | null
-          quiz_id?: string | null
-          updated_at?: string | null
+          is_active?: boolean | null
+          title: string
+          updated_at?: string
         }
         Update: {
-          correct_answer?: string
-          created_at?: string | null
+          content?: string
+          created_at?: string
           id?: string
-          options?: Json
-          question_text?: string
-          question_type?: Database["public"]["Enums"]["question_type"] | null
-          quiz_id?: string | null
-          updated_at?: string | null
+          is_active?: boolean | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      cash_accounts: {
+        Row: {
+          balance: number
+          created_at: string
+          id: string
+          is_active: boolean
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          balance?: number
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          balance?: number
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      cash_transactions: {
+        Row: {
+          account_id: string
+          amount: number
+          created_at: string
+          created_by: string | null
+          description: string | null
+          id: string
+          reference_number: string | null
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          account_id: string
+          amount: number
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          reference_number?: string | null
+          type: string
+          updated_at?: string
+        }
+        Update: {
+          account_id?: string
+          amount?: number
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          reference_number?: string | null
+          type?: string
+          updated_at?: string
         }
         Relationships: [
           {
-            foreignKeyName: "questions_quiz_id_fkey"
-            columns: ["quiz_id"]
+            foreignKeyName: "cash_transactions_account_id_fkey"
+            columns: ["account_id"]
             isOneToOne: false
-            referencedRelation: "quizzes"
+            referencedRelation: "cash_accounts"
             referencedColumns: ["id"]
           },
         ]
       }
-      quizzes: {
+      cash_transfers: {
+        Row: {
+          amount: number
+          created_at: string
+          created_by: string | null
+          description: string | null
+          from_account_id: string
+          id: string
+          reference_number: string | null
+          to_account_id: string
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          from_account_id: string
+          id?: string
+          reference_number?: string | null
+          to_account_id: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          from_account_id?: string
+          id?: string
+          reference_number?: string | null
+          to_account_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cash_transfers_from_account_id_fkey"
+            columns: ["from_account_id"]
+            isOneToOne: false
+            referencedRelation: "cash_accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cash_transfers_to_account_id_fkey"
+            columns: ["to_account_id"]
+            isOneToOne: false
+            referencedRelation: "cash_accounts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      categories: {
+        Row: {
+          actual_fee: number | null
+          created_at: string
+          description: string | null
+          expiry_days: number | null
+          id: string
+          is_active: boolean | null
+          name_english: string
+          name_malayalam: string
+          offer_fee: number | null
+          qr_code_url: string | null
+          updated_at: string
+        }
+        Insert: {
+          actual_fee?: number | null
+          created_at?: string
+          description?: string | null
+          expiry_days?: number | null
+          id?: string
+          is_active?: boolean | null
+          name_english: string
+          name_malayalam: string
+          offer_fee?: number | null
+          qr_code_url?: string | null
+          updated_at?: string
+        }
+        Update: {
+          actual_fee?: number | null
+          created_at?: string
+          description?: string | null
+          expiry_days?: number | null
+          id?: string
+          is_active?: boolean | null
+          name_english?: string
+          name_malayalam?: string
+          offer_fee?: number | null
+          qr_code_url?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      expenses: {
+        Row: {
+          account_id: string
+          amount: number
+          category: string
+          created_at: string
+          created_by: string | null
+          description: string
+          id: string
+          reference_number: string | null
+          updated_at: string
+        }
+        Insert: {
+          account_id: string
+          amount: number
+          category: string
+          created_at?: string
+          created_by?: string | null
+          description: string
+          id?: string
+          reference_number?: string | null
+          updated_at?: string
+        }
+        Update: {
+          account_id?: string
+          amount?: number
+          category?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string
+          id?: string
+          reference_number?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "expenses_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "cash_accounts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      panchayaths: {
+        Row: {
+          created_at: string
+          district: string
+          id: string
+          is_active: boolean | null
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          district: string
+          id?: string
+          is_active?: boolean | null
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          district?: string
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      registration_verifications: {
         Row: {
           created_at: string | null
-          description: string | null
           id: string
-          status: Database["public"]["Enums"]["quiz_status"] | null
-          title: string
+          registration_id: string
+          restored_at: string | null
+          restored_by: string | null
+          updated_at: string | null
+          verified: boolean
+          verified_at: string | null
+          verified_by: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          registration_id: string
+          restored_at?: string | null
+          restored_by?: string | null
+          updated_at?: string | null
+          verified?: boolean
+          verified_at?: string | null
+          verified_by?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          registration_id?: string
+          restored_at?: string | null
+          restored_by?: string | null
+          updated_at?: string | null
+          verified?: boolean
+          verified_at?: string | null
+          verified_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "registration_verifications_registration_id_fkey"
+            columns: ["registration_id"]
+            isOneToOne: true
+            referencedRelation: "registrations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      registrations: {
+        Row: {
+          address: string
+          agent: string | null
+          approved_by: string | null
+          approved_date: string | null
+          category_id: string
+          created_at: string
+          customer_id: string
+          expiry_date: string | null
+          fee: number | null
+          full_name: string
+          id: string
+          mobile_number: string
+          panchayath_id: string | null
+          preference_category_id: string | null
+          status: string
+          updated_at: string
+          ward: string
+        }
+        Insert: {
+          address: string
+          agent?: string | null
+          approved_by?: string | null
+          approved_date?: string | null
+          category_id: string
+          created_at?: string
+          customer_id: string
+          expiry_date?: string | null
+          fee?: number | null
+          full_name: string
+          id?: string
+          mobile_number: string
+          panchayath_id?: string | null
+          preference_category_id?: string | null
+          status?: string
+          updated_at?: string
+          ward: string
+        }
+        Update: {
+          address?: string
+          agent?: string | null
+          approved_by?: string | null
+          approved_date?: string | null
+          category_id?: string
+          created_at?: string
+          customer_id?: string
+          expiry_date?: string | null
+          fee?: number | null
+          full_name?: string
+          id?: string
+          mobile_number?: string
+          panchayath_id?: string | null
+          preference_category_id?: string | null
+          status?: string
+          updated_at?: string
+          ward?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "registrations_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "registrations_panchayath_id_fkey"
+            columns: ["panchayath_id"]
+            isOneToOne: false
+            referencedRelation: "panchayaths"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "registrations_preference_category_id_fkey"
+            columns: ["preference_category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      shared_link_submissions: {
+        Row: {
+          created_at: string | null
+          id: string
+          registration_id: string
+          shared_link_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          registration_id: string
+          shared_link_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          registration_id?: string
+          shared_link_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shared_link_submissions_registration_id_fkey"
+            columns: ["registration_id"]
+            isOneToOne: false
+            referencedRelation: "registrations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "shared_link_submissions_shared_link_id_fkey"
+            columns: ["shared_link_id"]
+            isOneToOne: false
+            referencedRelation: "shared_links"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      shared_links: {
+        Row: {
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          mobile_number: string
+          share_code: string
           updated_at: string | null
         }
         Insert: {
           created_at?: string | null
-          description?: string | null
           id?: string
-          status?: Database["public"]["Enums"]["quiz_status"] | null
-          title: string
+          is_active?: boolean | null
+          mobile_number: string
+          share_code: string
           updated_at?: string | null
         }
         Update: {
           created_at?: string | null
-          description?: string | null
           id?: string
-          status?: Database["public"]["Enums"]["quiz_status"] | null
-          title?: string
+          is_active?: boolean | null
+          mobile_number?: string
+          share_code?: string
           updated_at?: string | null
         }
         Relationships: []
       }
-      submissions: {
+      utilities: {
         Row: {
-          answers: Json
+          created_at: string
+          description: string | null
           id: string
-          mobile_number: string
-          panchayath: string
-          participant_name: string
-          quiz_id: string | null
-          reference_mobile_number: string
-          referred_by: string | null
-          score: number | null
-          submitted_at: string | null
+          is_active: boolean | null
+          name: string
+          updated_at: string
+          url: string
         }
         Insert: {
-          answers: Json
+          created_at?: string
+          description?: string | null
           id?: string
-          mobile_number: string
-          panchayath: string
-          participant_name: string
-          quiz_id?: string | null
-          reference_mobile_number: string
-          referred_by?: string | null
-          score?: number | null
-          submitted_at?: string | null
+          is_active?: boolean | null
+          name: string
+          updated_at?: string
+          url: string
         }
         Update: {
-          answers?: Json
+          created_at?: string
+          description?: string | null
           id?: string
-          mobile_number?: string
-          panchayath?: string
-          participant_name?: string
-          quiz_id?: string | null
-          reference_mobile_number?: string
-          referred_by?: string | null
-          score?: number | null
-          submitted_at?: string | null
+          is_active?: boolean | null
+          name?: string
+          updated_at?: string
+          url?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "submissions_quiz_id_fkey"
-            columns: ["quiz_id"]
-            isOneToOne: false
-            referencedRelation: "quizzes"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      calculate_quiz_score: {
-        Args: { quiz_id_param: string; answers_param: Json }
-        Returns: number
-      }
-      verify_admin_login: {
-        Args: { input_username: string; input_password: string }
-        Returns: boolean
+      generate_customer_id: {
+        Args: { mobile: string; name: string }
+        Returns: string
       }
     }
     Enums: {
-      question_type: "multiple_choice"
-      quiz_status: "active" | "inactive"
+      [_ in never]: never
     }
     CompositeTypes: {
       [_ in never]: never
@@ -293,9 +735,6 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {
-      question_type: ["multiple_choice"],
-      quiz_status: ["active", "inactive"],
-    },
+    Enums: {},
   },
 } as const
