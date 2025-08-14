@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Trophy, Medal, Award } from "lucide-react";
 
 interface ReferralWinner {
-  mobile_number: string;
+  referrer_mobile: string;
   referral_count: number;
 }
 
@@ -38,8 +38,8 @@ const ReferralWinners = () => {
       const sortedWinners = Object.entries(referralCounts)
         .sort(([, a], [, b]) => b - a)
         .slice(0, 3)
-        .map(([mobile_number, referral_count]) => ({
-          mobile_number,
+        .map(([referrer_mobile, referral_count]) => ({
+          referrer_mobile,
           referral_count
         }));
 
@@ -96,11 +96,11 @@ const ReferralWinners = () => {
         ) : (
           <div className="space-y-4">
             {winners.map((winner, index) => (
-              <div key={winner.mobile_number} className="flex items-center justify-between p-4 border rounded-lg">
+              <div key={winner.referrer_mobile} className="flex items-center justify-between p-4 border rounded-lg">
                 <div className="flex items-center gap-3">
                   {getIcon(index)}
                   <div>
-                    <div className="font-semibold">{winner.mobile_number}</div>
+                    <div className="font-semibold">{winner.referrer_mobile}</div>
                     <div className="text-sm text-muted-foreground">
                       {winner.referral_count} referrals
                     </div>
