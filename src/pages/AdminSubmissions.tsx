@@ -203,7 +203,7 @@ const AdminSubmissions = () => {
 
   const exportToCSV = () => {
     const csvContent = [
-      ["Name", "Mobile", "Panchayath", "Score", "Reference ID", "Submitted At"].join(","),
+      ["Name", "Mobile", "Panchayath", "Score", "Reference Mobile Number", "Submitted At"].join(","),
       ...filteredSubmissions.map(submission => [
         submission.participant_name,
         submission.mobile_number,
@@ -394,7 +394,7 @@ const AdminSubmissions = () => {
             <div className="flex items-center space-x-2">
               <Search className="h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Search by name, mobile, panchayath, or reference ID..."
+                placeholder="Search by name, mobile, panchayath, or reference mobile number..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="max-w-sm"
@@ -415,7 +415,7 @@ const AdminSubmissions = () => {
                       <TableHead>Contact</TableHead>
                       <TableHead>Location</TableHead>
                       <TableHead>Score</TableHead>
-                      <TableHead>Reference ID</TableHead>
+                      <TableHead>Reference Mobile Number</TableHead>
                       <TableHead>Submitted</TableHead>
                     </TableRow>
                   </TableHeader>
