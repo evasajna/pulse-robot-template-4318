@@ -111,7 +111,8 @@ export type Database = {
           panchayath: string
           participant_name: string
           quiz_id: string | null
-          reference_id: string | null
+          reference_mobile_number: string
+          referred_by: string | null
           score: number | null
           submitted_at: string | null
         }
@@ -122,7 +123,8 @@ export type Database = {
           panchayath: string
           participant_name: string
           quiz_id?: string | null
-          reference_id?: string | null
+          reference_mobile_number: string
+          referred_by?: string | null
           score?: number | null
           submitted_at?: string | null
         }
@@ -133,7 +135,8 @@ export type Database = {
           panchayath?: string
           participant_name?: string
           quiz_id?: string | null
-          reference_id?: string | null
+          reference_mobile_number?: string
+          referred_by?: string | null
           score?: number | null
           submitted_at?: string | null
         }

@@ -203,7 +203,7 @@ const Quiz = () => {
         panchayath: participantData.panchayath,
         answers: answers,
         score: score,
-        reference_id: referenceId,
+        reference_mobile_number: referenceId,
       };
 
       console.log("Submitting to database:", submissionData);

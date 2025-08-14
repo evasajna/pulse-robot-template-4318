@@ -15,7 +15,7 @@ interface Submission {
   mobile_number: string;
   panchayath: string;
   score: number;
-  reference_id: string;
+  reference_mobile_number: string;
   submitted_at: string;
   quiz_id: string;
   reference_mobile: string | null;
@@ -190,7 +190,7 @@ const AdminSubmissions = () => {
         submission.participant_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         submission.mobile_number.includes(searchTerm) ||
         submission.panchayath.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        submission.reference_id.toLowerCase().includes(searchTerm.toLowerCase())
+        submission.reference_mobile_number.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     setFilteredSubmissions(filtered);
@@ -209,7 +209,7 @@ const AdminSubmissions = () => {
         submission.mobile_number,
         submission.panchayath,
         submission.score,
-        submission.reference_id,
+        submission.reference_mobile_number,
         new Date(submission.submitted_at).toLocaleString()
       ].join(","))
     ].join("\n");
@@ -444,7 +444,7 @@ const AdminSubmissions = () => {
                         </TableCell>
                         <TableCell>
                           <code className="text-xs bg-muted px-1 py-0.5 rounded">
-                            {submission.reference_id}
+                            {submission.reference_mobile_number}
                           </code>
                         </TableCell>
                         <TableCell>
