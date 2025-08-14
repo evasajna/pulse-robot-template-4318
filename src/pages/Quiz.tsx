@@ -14,13 +14,13 @@ import { ArrowLeft, Clock, User, MapPin, Phone } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const participantSchema = z.object({
-  participant_name: z.string().min(2, "Name must be at least 2 characters"),
-  mobile_number: z.string().min(10, "Mobile number must be at least 10 digits").max(15, "Mobile number must be at most 15 digits"),
-  panchayath: z.string().min(2, "Panchayath name is required"),
+  participant_name: z.string().min(2, "പേര് കുറഞ്ഞത് 2 അക്ഷരങ്ങൾ ഉണ്ടായിരിക്കണം"),
+  mobile_number: z.string().min(10, "മൊബൈൽ നമ്പർ കുറഞ്ഞത് 10 അക്കങ്ങൾ ഉണ്ടായിരിക്കണം").max(15, "മൊബൈൽ നമ്പർ കൂടുതലായാൽ 15 അക്കങ്ങൾ ആകാം"),
+  panchayath: z.string().min(2, "പഞ്ചായത്തിന്റെ പേര് ആവശ്യമാണ്"),
   reference_mobile: z.string().optional().refine((val) => {
     if (!val || val === "") return true;
     return val.length >= 10 && val.length <= 15;
-  }, "Reference mobile number must be between 10-15 digits"),
+  }, "റഫറൻസ് മൊബൈൽ നമ്പർ 10-15 അക്കങ്ങൾക്കിടയിൽ ആയിരിക്കണം"),
 });
 
 type ParticipantForm = z.infer<typeof participantSchema>;
@@ -97,8 +97,13 @@ const Quiz = () => {
           ...q,
           options: Array.isArray(q.options) ? q.options : JSON.parse(q.options as string)
         })) || [];
-        setQuestions(formattedQuestions);
-        setTimeLeft(questionsData.length * 60); // 1 minute per question
+        
+        // Randomly select 5 questions from available questions
+        const shuffled = formattedQuestions.sort(() => 0.5 - Math.random());
+        const selectedQuestions = shuffled.slice(0, 5);
+        
+        setQuestions(selectedQuestions);
+        setTimeLeft(selectedQuestions.length * 60); // 1 minute per question
       }
     } catch (error) {
       toast({
@@ -267,12 +272,12 @@ const Quiz = () => {
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="bg-muted/50 p-4 rounded-lg">
-                  <h3 className="font-semibold mb-2">Quiz Instructions:</h3>
+                  <h3 className="font-semibold mb-2">ക്വിസ് നിർദ്ദേശങ്ങൾ:</h3>
                   <ul className="space-y-1 text-sm text-muted-foreground">
-                    <li>• Complete all {questions.length} questions</li>
-                    <li>• You have {questions.length} minutes to complete the quiz</li>
-                    <li>• Each question has only one correct answer</li>
-                    <li>• Your submission will be final and cannot be changed</li>
+                    <li>• മൊത്തം {questions.length} ചോദ്യങ്ങൾ പൂർത്തിയാക്കുക</li>
+                    <li>• ക്വിസ് പൂർത്തിയാക്കാൻ നിങ്ങൾക്ക് {questions.length} മിനിറ്റുണ്ട്</li>
+                    <li>• ഓരോ ചോദ്യത്തിനും ഒരു ശരിയായ ഉത്തരം മാത്രമേ ഉള്ളൂ</li>
+                    <li>• നിങ്ങളുടെ സമർപ്പണം അന്തിമമാണ്, മാറ്റാൻ കഴിയില്ല</li>
                   </ul>
                 </div>
 
@@ -285,10 +290,10 @@ const Quiz = () => {
                         <FormItem>
                           <FormLabel className="flex items-center">
                             <User className="h-4 w-4 mr-2" />
-                            Full Name
+                            പൂർണ്ണ നാമം
                           </FormLabel>
                           <FormControl>
-                            <Input placeholder="Enter your full name" {...field} />
+                            <Input placeholder="നിങ്ങളുടെ പൂർണ്ണ നാമം നൽകുക" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -302,10 +307,10 @@ const Quiz = () => {
                         <FormItem>
                           <FormLabel className="flex items-center">
                             <Phone className="h-4 w-4 mr-2" />
-                            Mobile Number
+                            മൊബൈൽ നമ്പർ
                           </FormLabel>
                           <FormControl>
-                            <Input placeholder="Enter your mobile number" {...field} />
+                            <Input placeholder="നിങ്ങളുടെ മൊബൈൽ നമ്പർ നൽകുക" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -319,10 +324,10 @@ const Quiz = () => {
                         <FormItem>
                           <FormLabel className="flex items-center">
                             <MapPin className="h-4 w-4 mr-2" />
-                            Panchayath
+                            പഞ്ചായത്ത്
                           </FormLabel>
                           <FormControl>
-                            <Input placeholder="Enter your panchayath name" {...field} />
+                            <Input placeholder="നിങ്ങളുടെ പഞ്ചായത്തിന്റെ പേര് നൽകുക" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -336,21 +341,21 @@ const Quiz = () => {
                         <FormItem>
                           <FormLabel className="flex items-center">
                             <Phone className="h-4 w-4 mr-2" />
-                            Reference Mobile Number (Optional)
+                            റഫറൻസ് മൊബൈൽ നമ്പർ (ഓപ്ഷണൽ)
                           </FormLabel>
                           <FormControl>
-                            <Input placeholder="Enter referrer's mobile number" {...field} />
+                            <Input placeholder="റഫർ ചെയ്തയാളുടെ മൊബൈൽ നമ്പർ നൽകുക" {...field} />
                           </FormControl>
                           <FormMessage />
                           <p className="text-xs text-muted-foreground">
-                            Enter the mobile number of the person who referred you to participate in this quiz
+                            ഈ ക്വിസിൽ പങ്കെടുക്കാൻ നിങ്ങളെ റഫർ ചെയ്ത വ്യക്തിയുടെ മൊബൈൽ നമ്പർ നൽകുക
                           </p>
                         </FormItem>
                       )}
                     />
 
                     <Button type="submit" className="w-full" disabled={loading}>
-                      {loading ? "Validating..." : "Start Quiz"}
+                      {loading ? "പരിശോധിക്കുന്നു..." : "ക്വിസ് ആരംഭിക്കുക"}
                     </Button>
                   </form>
                 </Form>

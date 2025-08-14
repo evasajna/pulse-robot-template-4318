@@ -1,83 +1,41 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "react-router-dom";
-import { Brain, Users, BarChart3, Shield } from "lucide-react";
+import Navbar from "@/components/Navbar";
+import indianFlag from "@/assets/indian-flag.jpg";
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-background">
-      {/* Hero Section */}
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-green-50">
+      <Navbar />
+      
+      {/* Hero Section with Indian Theme */}
       <div className="container mx-auto px-4 py-16">
-        <div className="text-center mb-16">
-          <h1 className="text-5xl font-bold mb-6 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-            Quiz Management System
-          </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
-            A comprehensive platform for creating, managing, and analyzing quiz submissions with real-time scoring and leaderboards.
-          </p>
-          <div className="flex gap-4 justify-center">
-            <Link to="/quiz">
-              <Button size="lg" className="bg-primary hover:bg-primary/90">
-                Take Quiz
-              </Button>
-            </Link>
-            <Link to="/admin">
-              <Button variant="outline" size="lg">
-                Admin Login
+        <div className="text-center max-w-4xl mx-auto">
+          <div className="mb-8 relative">
+            <img 
+              src={indianFlag} 
+              alt="Indian Flag" 
+              className="w-32 h-20 mx-auto mb-6 rounded-lg shadow-lg"
+            />
+            <h1 className="text-6xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-orange-500 via-gray-800 to-green-600">
+              ക്വിസ് പ്രോഗ്രാം
+            </h1>
+            <p className="text-2xl text-gray-700 mb-12 font-medium">
+              നിങ്ങളുടെ അറിവ് പരീക്ഷിക്കാനുള്ള സമയമായി
+            </p>
+          </div>
+          
+          <div className="relative">
+            <div className="absolute inset-0 bg-gradient-to-r from-orange-200 via-white to-green-200 rounded-2xl blur-3xl opacity-30"></div>
+            <Link to="/quiz" className="relative block">
+              <Button 
+                size="lg" 
+                className="relative px-16 py-6 text-xl font-bold bg-gradient-to-r from-orange-500 via-gray-800 to-green-600 hover:from-orange-600 hover:via-gray-900 hover:to-green-700 text-white shadow-2xl transform hover:scale-105 transition-all duration-300"
+              >
+                ക്വിസ് എടുക്കുക
               </Button>
             </Link>
           </div>
-        </div>
-
-        {/* Features Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
-          <Card className="text-center hover:shadow-lg transition-shadow">
-            <CardHeader>
-              <Brain className="h-12 w-12 text-primary mx-auto mb-4" />
-              <CardTitle>Smart Quizzes</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <CardDescription>
-                Create engaging multiple-choice quizzes with automatic scoring and validation.
-              </CardDescription>
-            </CardContent>
-          </Card>
-
-          <Card className="text-center hover:shadow-lg transition-shadow">
-            <CardHeader>
-              <Users className="h-12 w-12 text-accent mx-auto mb-4" />
-              <CardTitle>Participant Management</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <CardDescription>
-                Track participant details, prevent duplicates, and manage submissions efficiently.
-              </CardDescription>
-            </CardContent>
-          </Card>
-
-          <Card className="text-center hover:shadow-lg transition-shadow">
-            <CardHeader>
-              <BarChart3 className="h-12 w-12 text-success mx-auto mb-4" />
-              <CardTitle>Analytics & Reports</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <CardDescription>
-                View detailed analytics, leaderboards, and comprehensive submission reports.
-              </CardDescription>
-            </CardContent>
-          </Card>
-
-          <Card className="text-center hover:shadow-lg transition-shadow">
-            <CardHeader>
-              <Shield className="h-12 w-12 text-warning mx-auto mb-4" />
-              <CardTitle>Secure Admin</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <CardDescription>
-                Protected admin interface for managing questions, viewing results, and system control.
-              </CardDescription>
-            </CardContent>
-          </Card>
         </div>
       </div>
     </div>
