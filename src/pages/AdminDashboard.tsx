@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import AdminLayout from "@/components/AdminLayout";
 import { Users, FileQuestion, Trophy, BarChart3 } from "lucide-react";
+import ReferralWinners from "@/components/ReferralWinners";
 
 interface DashboardStats {
   totalSubmissions: number;
@@ -156,7 +157,10 @@ const AdminDashboard = () => {
           </Card>
         </div>
 
-        {/* Recent Activity */}
+        {/* Referral Winners */}
+        <ReferralWinners />
+
+        {/* System Overview */}
         <Card>
           <CardHeader>
             <CardTitle>System Overview</CardTitle>
